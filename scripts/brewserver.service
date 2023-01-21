@@ -1,0 +1,12 @@
+[Unit]
+Description=EG's Brewserver
+After=network-online.target
+Wants=network-oneline.target
+
+[Service]
+Type=simple
+User=taylor
+ExecStart=/home/taylor/src/brewserver/build/brewserver
+
+[Install]
+WantedBy=multi-user.target
