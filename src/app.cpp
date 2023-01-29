@@ -47,7 +47,6 @@ void App::handleSignal(int signal, siginfo_t *info, void *ucontext) {
 
 int App::run() {
     app->runLoop = true;
-    //app->serverThread.reset(new std::thread(std::bind(&App::serverMain, app)));
     return app->_run();
 }
 
@@ -101,14 +100,6 @@ App::App()
     this->freezer.reset(new Relay(0,24,true));
 
     this->loadConfig();
-
-/*
-    this->coolTarget = 68.f;
-    this->coolMin = 40.f;
-
-    this->heatTarget = 66.f;
-    this->heatMax = 85.f;
-    */
 }
 
 void App::saveConfig() {
@@ -484,13 +475,6 @@ int App::handleStatusRequest(struct mg_connection *c, void *data) {
     mg_printf(c, "\r\n");
     mg_printf(c, "%s", statusStr.c_str());
 
-    return 200;
-}
-
-int websocketHandle(struct mg_connection *c, void *data) {
-    mg_printf(c, "HTTP/1.1 200 OK\r\n");
-    mg_printf(c, "Connection: close\r\n");
-    mg_printf(c, "\r\n");
     return 200;
 }
 
