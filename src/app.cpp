@@ -235,15 +235,18 @@ int App::_run() {
 
         /* send websocket data each second*/
         time_t now = time(NULL);
+        bool didSend = false;
         if (now-lastWSSent>=1) {
+            didSend = false;
             nlohmann::json status;
             status["status"] = this->buildStatusData();
             std::string statusStr = status.dump();
 
             for (struct mg_connection *c : this->websocketConnections) {
                 mg_websocket_write(c, MG_WEBSOCKET_OPCODE_TEXT, statusStr.c_str(), statusStr.size());
+                didSend = true;
             }
-            lastWSSent = now;
+            if (didSend) lastWSSent = now;
         }
 
         usleep(100 * 1000);
@@ -484,7 +487,7 @@ void App::setupWebServer() {
 
     const char *opts[] = {
         "listening_ports", "127.0.0.1:8000",
-        "num_threads", "5",
+        "num_threads", "10",
         "enable_websocket_ping_pong", "yes",
         NULL, NULL
     };
@@ -513,7 +516,7 @@ void App::handleWebsocketReady(struct mg_connection *c, void *data) {
 }
 
 int App::handleWebsocketData(struct mg_connection *c, int bits, char *data, size_t len, void *cbdata) {
-    return 0;
+    return 1;
 }
 
 void App::handleWebsocketClosed(const struct mg_connection *c, void *data) {
