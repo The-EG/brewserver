@@ -13,13 +13,11 @@
 
 #define SPEED_MHZ 1.5
 
-//#define FONT_PATH "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"
 #define FONT_PATH "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
-//#define FONT_PATH "/usr/share/fonts/opentype/terminus/terminus-normal.otb"
 
 ST7920::ST7920(uint8_t bus, uint8_t dev) {
-    std::string path = "/sev/spidev" + std::to_string(bus) + "." + std::to_string(dev);
-    this->fd = open("/dev/spidev0.0", O_WRONLY);
+    std::string path = "/dev/spidev" + std::to_string(bus) + "." + std::to_string(dev);
+    this->fd = open(path.c_str(), O_WRONLY);
     uint8_t mode = SPI_MODE_0;
     if(ioctl(this->fd, SPI_IOC_WR_MODE, &mode) ) {
         printf("couldn't set mode, ");
